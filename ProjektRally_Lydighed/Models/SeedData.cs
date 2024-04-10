@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProjektRally_Lydighed.Data;
-using Rally_Lydighed.Models;
+using ProjektRally_Lydighed.Models;
 using System;
+using System.Linq;
 
 namespace ProjektRally_Lydighed.Models
 {
@@ -13,29 +14,29 @@ namespace ProjektRally_Lydighed.Models
             using (var context = new ProjektRally_LydighedContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ProjektRally_LydighedContext>>()))
             {
-                // Tjek om der allerede er nogen brugere.
-                if (context.User.Any())
+                // Tjek om der allerede er nogen tracks.
+                if (context.Track.Any())
                 {
                     return;   // Databasen er allerede fyldt
                 }
-                context.User.AddRange(
-                    new User
+
+                context.Track.AddRange(
+                    new Track
                     {
-                        FirstName = "John",
-                        LastName = "Doe",
-                        Email = "john.doe@example.com",
-                        UserName = "johndoe",
-                        Password = "password123"
+                        Name = "Track 1",
+                        Comment = "This is the first track",
+                        Location = "Location 1",
+                        ReleaseDate = new DateTime(2022, 1, 1)
                     },
-                    new User
+                    new Track
                     {
-                        FirstName = "Jane",
-                        LastName = "Smith",
-                        Email = "jane.smith@example.com",
-                        UserName = "janesmith",
-                        Password = "password456"
+                        Name = "Track 2",
+                        Comment = "This is the second track",
+                        Location = "Location 2",
+                        ReleaseDate = new DateTime(2022, 2, 1)
                     }
                 );
+
                 context.SaveChanges();
             }
         }
