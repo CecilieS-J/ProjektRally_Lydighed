@@ -10,28 +10,22 @@ using ProjektRally_Lydighed.Models;
 
 namespace ProjektRally_Lydighed.Controllers
 {
-    public class TracksController : Controller
+    public class SignsController : Controller
     {
         private readonly ProjektRally_LydighedContext _context;
 
-        public TracksController(ProjektRally_LydighedContext context)
+        public SignsController(ProjektRally_LydighedContext context)
         {
             _context = context;
         }
 
-        // GET: Tracks
-        /*public async Task<IActionResult> Index()
-        {
-            return View(await _context.Track.ToListAsync());
-        }*/
+        // GET: Signs
         public async Task<IActionResult> Index()
         {
-            var tracks = await _context.Track.ToListAsync();
-            return View(tracks);
+            return View(await _context.Sign.ToListAsync());
         }
 
-
-        // GET: Tracks/Details/5
+        // GET: Signs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,39 +33,39 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
+            var sign = await _context.Sign
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (track == null)
+            if (sign == null)
             {
                 return NotFound();
             }
 
-            return View(track);
+            return View(sign);
         }
 
-        // GET: Tracks/Create
+        // GET: Signs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tracks/Create
+        // POST: Signs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+        public async Task<IActionResult> Create([Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(track);
+                _context.Add(sign);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(sign);
         }
 
-        // GET: Tracks/Edit/5
+        // GET: Signs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,22 +73,22 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track.FindAsync(id);
-            if (track == null)
+            var sign = await _context.Sign.FindAsync(id);
+            if (sign == null)
             {
                 return NotFound();
             }
-            return View(track);
+            return View(sign);
         }
 
-        // POST: Tracks/Edit/5
+        // POST: Signs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
         {
-            if (id != track.Id)
+            if (id != sign.Id)
             {
                 return NotFound();
             }
@@ -103,12 +97,12 @@ namespace ProjektRally_Lydighed.Controllers
             {
                 try
                 {
-                    _context.Update(track);
+                    _context.Update(sign);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TrackExists(track.Id))
+                    if (!SignExists(sign.Id))
                     {
                         return NotFound();
                     }
@@ -119,10 +113,10 @@ namespace ProjektRally_Lydighed.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(sign);
         }
 
-        // GET: Tracks/Delete/5
+        // GET: Signs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,34 +124,34 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
+            var sign = await _context.Sign
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (track == null)
+            if (sign == null)
             {
                 return NotFound();
             }
 
-            return View(track);
+            return View(sign);
         }
 
-        // POST: Tracks/Delete/5
+        // POST: Signs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var track = await _context.Track.FindAsync(id);
-            if (track != null)
+            var sign = await _context.Sign.FindAsync(id);
+            if (sign != null)
             {
-                _context.Track.Remove(track);
+                _context.Sign.Remove(sign);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TrackExists(int id)
+        private bool SignExists(int id)
         {
-            return _context.Track.Any(e => e.Id == id);
+            return _context.Sign.Any(e => e.Id == id);
         }
     }
 }

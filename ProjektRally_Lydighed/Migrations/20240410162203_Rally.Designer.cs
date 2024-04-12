@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektRally_Lydighed.Data;
 
@@ -11,9 +12,11 @@ using ProjektRally_Lydighed.Data;
 namespace ProjektRally_Lydighed.Migrations
 {
     [DbContext(typeof(ProjektRally_LydighedContext))]
-    partial class ProjektRally_LydighedContextModelSnapshot : ModelSnapshot
+    [Migration("20240410162203_Rally")]
+    partial class Rally
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,7 +172,7 @@ namespace ProjektRally_Lydighed.Migrations
                     b.ToTable("Track");
                 });
 
-            modelBuilder.Entity("ProjektRally_Lydighed.Models.User", b =>
+            modelBuilder.Entity("Rally_Lydighed.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +241,7 @@ namespace ProjektRally_Lydighed.Migrations
                         .WithMany("Tracks")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("ProjektRally_Lydighed.Models.User", null)
+                    b.HasOne("Rally_Lydighed.Models.User", null)
                         .WithMany("Tracks")
                         .HasForeignKey("UserId");
 
@@ -262,7 +265,7 @@ namespace ProjektRally_Lydighed.Migrations
                     b.Navigation("Signs");
                 });
 
-            modelBuilder.Entity("ProjektRally_Lydighed.Models.User", b =>
+            modelBuilder.Entity("Rally_Lydighed.Models.User", b =>
                 {
                     b.Navigation("Tracks");
                 });

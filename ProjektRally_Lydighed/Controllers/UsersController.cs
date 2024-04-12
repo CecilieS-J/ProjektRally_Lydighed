@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektRally_Lydighed.Data;
-using Rally_Lydighed.Models;
+using ProjektRally_Lydighed.Models;
 
 namespace ProjektRally_Lydighed.Controllers
 {

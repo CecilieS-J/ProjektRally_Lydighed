@@ -1,4 +1,6 @@
-﻿namespace Rally_Lydighed.Models
+﻿using ProjektRally_Lydighed.Models;
+
+namespace ProjektRally_Lydighed.Models
 {
     public class User
     {
@@ -8,6 +10,7 @@
         public string Email { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-       
+
+        public ICollection<Track> Tracks { get; set; }
     }
 }

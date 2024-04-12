@@ -10,28 +10,22 @@ using ProjektRally_Lydighed.Models;
 
 namespace ProjektRally_Lydighed.Controllers
 {
-    public class TracksController : Controller
+    public class CategoriesController : Controller
     {
         private readonly ProjektRally_LydighedContext _context;
 
-        public TracksController(ProjektRally_LydighedContext context)
+        public CategoriesController(ProjektRally_LydighedContext context)
         {
             _context = context;
         }
 
-        // GET: Tracks
-        /*public async Task<IActionResult> Index()
-        {
-            return View(await _context.Track.ToListAsync());
-        }*/
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var tracks = await _context.Track.ToListAsync();
-            return View(tracks);
+            return View(await _context.Category.ToListAsync());
         }
 
-
-        // GET: Tracks/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,39 +33,39 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
+            var category = await _context.Category
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (track == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(track);
+            return View(category);
         }
 
-        // GET: Tracks/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tracks/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+        public async Task<IActionResult> Create([Bind("Id,Type,NumberOfExercise,Rules")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(track);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(category);
         }
 
-        // GET: Tracks/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,22 +73,22 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track.FindAsync(id);
-            if (track == null)
+            var category = await _context.Category.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(track);
+            return View(category);
         }
 
-        // POST: Tracks/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,NumberOfExercise,Rules")] Category category)
         {
-            if (id != track.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -103,12 +97,12 @@ namespace ProjektRally_Lydighed.Controllers
             {
                 try
                 {
-                    _context.Update(track);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TrackExists(track.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -119,10 +113,10 @@ namespace ProjektRally_Lydighed.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(category);
         }
 
-        // GET: Tracks/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,34 +124,34 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
+            var category = await _context.Category
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (track == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(track);
+            return View(category);
         }
 
-        // POST: Tracks/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var track = await _context.Track.FindAsync(id);
-            if (track != null)
+            var category = await _context.Category.FindAsync(id);
+            if (category != null)
             {
-                _context.Track.Remove(track);
+                _context.Category.Remove(category);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TrackExists(int id)
+        private bool CategoryExists(int id)
         {
-            return _context.Track.Any(e => e.Id == id);
+            return _context.Category.Any(e => e.Id == id);
         }
     }
 }

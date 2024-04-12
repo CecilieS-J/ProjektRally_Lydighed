@@ -1,0 +1,42 @@
+﻿@model ProjektRally_Lydighed.Models.Sign
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Sign</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SignNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SignNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.XCoordinate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.XCoordinate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.YCoordinate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.YCoordinate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Rotation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Rotation)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
