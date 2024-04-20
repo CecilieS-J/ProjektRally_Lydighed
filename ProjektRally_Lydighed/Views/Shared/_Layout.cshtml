@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="~/ProjektRally_Lydighed.styles.css" asp-append-version="true" />
 </head>
 
-
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -25,10 +24,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Hjem</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller= "Home" asp-action="Privacy">Profil</a>
+                            <form method="post" asp-controller="Users" asp-action="Index" id="userForm">
+                                <button type="submit" class="nav-link text-dark" style="background: none; border: none; cursor: pointer;">Profil</button>
+                            </form>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Baner</a>
+                            <form method="post" asp-controller="Tracks" asp-action="Index" id="trackForm">
+                                <button type="submit" class="nav-link text-dark" style="background: none; border: none; cursor: pointer;">Baner</button>
+                            </form>
                         </li>
                     </ul>
                     <div class="col-md-3 text-end">
@@ -44,6 +47,10 @@
             @RenderBody()
         </main>
     </div>
+</body>
+
+
+<body>
 
     <footer class="border-top footer text-muted">
         <div class="container">
