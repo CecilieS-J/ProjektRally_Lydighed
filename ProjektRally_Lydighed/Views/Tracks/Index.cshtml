@@ -1,8 +1,8 @@
-﻿@model IEnumerable<ProjektRally_Lydighed.Models.Track>
-
+﻿
+@model IEnumerable<Track>
 @{
     ViewData["Title"] = "Index";
-}
+} 
 
 
 <body>
@@ -72,7 +72,21 @@
             </div>
         </section>
 
-
+        <div class="container marketing">
+            <div class="row">
+                @foreach(var item in Model)
+                {
+                    <div class="col-lg-4">
+                    <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)" /></svg>
+                    <h2 class="fw-normal">@item.Name</h2>
+                    <p>@item.Comment </p>
+                        <p>
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Id">View details &raquo;</a>
+                        </p>
+                </div>
+                }
+            </div>
+            </div>
 
 
 
