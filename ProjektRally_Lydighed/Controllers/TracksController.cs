@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektRally_Lydighed.Data;
+using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
 
 namespace ProjektRally_Lydighed.Controllers
@@ -19,11 +20,9 @@ namespace ProjektRally_Lydighed.Controllers
             _context = context;
         }
 
+
         // GET: Tracks
-        /*public async Task<IActionResult> Index()
-        {
-            return View(await _context.Track.ToListAsync());
-        }*/
+        
         public async Task<IActionResult> Index()
         {
             var tracks = await _context.Track.ToListAsync();
@@ -159,5 +158,6 @@ namespace ProjektRally_Lydighed.Controllers
         {
             return _context.Track.Any(e => e.Id == id);
         }
+        
     }
 }
