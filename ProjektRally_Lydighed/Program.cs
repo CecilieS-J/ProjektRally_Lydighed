@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProjektRally_Lydighed.Data;
+using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
+using ProjektRally_Lydighed.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ProjektRally_LydighedContext>(options =>
@@ -9,6 +11,8 @@ builder.Services.AddDbContext<ProjektRally_LydighedContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+
 
 var app = builder.Build();
 

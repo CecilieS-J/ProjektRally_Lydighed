@@ -13,24 +13,22 @@ namespace ProjektRally_Lydighed.Controllers
 {
     public class TracksController : Controller
     {
-        private readonly ProjektRally_LydighedContext _context;
+        private readonly ITrackRepository _trackRepository;
 
-        public TracksController(ProjektRally_LydighedContext context)
+        // Constructor injection for ITrackRepository
+        public TracksController(ITrackRepository trackRepository)
         {
-            _context = context;
+            _trackRepository = trackRepository;
         }
 
-
-        // GET: Tracks
-        
+        // Action for displaying list of tracks
         public async Task<IActionResult> Index()
         {
-            var tracks = await _context.Track.ToListAsync();
+            var tracks = await _trackRepository.GetAllAsync();
             return View(tracks);
         }
 
-
-        // GET: Tracks/Details/5
+        // Action for displaying details of a track
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,8 +36,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var track = await _trackRepository.GetByIdAsync(id.Value);
             if (track == null)
             {
                 return NotFound();
@@ -48,29 +45,27 @@ namespace ProjektRally_Lydighed.Controllers
             return View(track);
         }
 
-        // GET: Tracks/Create
+        // Action for displaying form to create a new track
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tracks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Action for handling creation of a new track
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
         {
+            // Check if the model state is valid before proceeding
             if (ModelState.IsValid)
             {
-                _context.Add(track);
-                await _context.SaveChangesAsync();
+                await _trackRepository.AddAsync(track);
                 return RedirectToAction(nameof(Index));
             }
             return View(track);
         }
 
-        // GET: Tracks/Edit/5
+        // Action for displaying form to edit an existing track
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,7 +73,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track.FindAsync(id);
+            var track = await _trackRepository.GetByIdAsync(id.Value);
             if (track == null)
             {
                 return NotFound();
@@ -86,9 +81,7 @@ namespace ProjektRally_Lydighed.Controllers
             return View(track);
         }
 
-        // POST: Tracks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Action for handling editing of an existing track
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
@@ -102,12 +95,11 @@ namespace ProjektRally_Lydighed.Controllers
             {
                 try
                 {
-                    _context.Update(track);
-                    await _context.SaveChangesAsync();
+                    await _trackRepository.UpdateAsync(track);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!TrackExists(track.Id))
+                    if (!await TrackExists(track.Id))
                     {
                         return NotFound();
                     }
@@ -121,7 +113,7 @@ namespace ProjektRally_Lydighed.Controllers
             return View(track);
         }
 
-        // GET: Tracks/Delete/5
+        // Action for displaying confirmation page before deleting a track
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,8 +121,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var track = await _context.Track
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var track = await _trackRepository.GetByIdAsync(id.Value);
             if (track == null)
             {
                 return NotFound();
@@ -139,25 +130,25 @@ namespace ProjektRally_Lydighed.Controllers
             return View(track);
         }
 
-        // POST: Tracks/Delete/5
+        // Action for handling deletion of a track
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var track = await _context.Track.FindAsync(id);
+            var track = await _trackRepository.GetByIdAsync(id);
             if (track != null)
             {
-                _context.Track.Remove(track);
+                await _trackRepository.DeleteAsync(track);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TrackExists(int id)
+        // Helper method to check if a track exists
+        private async Task<bool> TrackExists(int id)
         {
-            return _context.Track.Any(e => e.Id == id);
+            var track = await _trackRepository.GetByIdAsync(id);
+            return track != null;
         }
-        
     }
 }
