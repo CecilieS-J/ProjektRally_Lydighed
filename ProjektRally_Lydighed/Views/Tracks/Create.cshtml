@@ -6,43 +6,44 @@
 
 <h1>Create</h1>
 
-<h4>Track</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Comment" class="control-label"></label>
-                <input asp-for="Comment" class="form-control" />
-                <span asp-validation-for="Comment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
-                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <!-- Placeholder til pile -->
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div id="arrow1" class="arrow" draggable="true" ondragstart="drag(event)">
+    ←
+</div>
+
+<div id="arrow2" class="arrow" draggable="true" ondragstart="drag(event)">
+    ↑
+</div>
+
+<div id="arrow3" class="arrow" draggable="true" ondragstart="drag(event)">
+    →
+</div>
+
+<div id="arrow4" class="arrow" draggable="true" ondragstart="drag(event)">
+    ↓
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <style>
+        .canvas {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #000;
+            position: relative;
+        }
+
+        .arrow {
+            width: 20px;
+            height: 20px;
+            background-color: #ccc;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 20px;
+            position: absolute;
+        }
+    </style>
 }
+

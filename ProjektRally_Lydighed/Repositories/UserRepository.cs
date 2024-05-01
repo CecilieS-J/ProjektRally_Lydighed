@@ -5,10 +5,12 @@ using ProjektRally_Lydighed.Repositories;
 
 namespace ProjektRally_Lydighed.Repositories
 {
-    public class TrackRepository : GenericRepository<Track>, ITrackRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public TrackRepository(ProjektRally_LydighedContext1 context) : base(context)
+
+        public UserRepository(ProjektRally_LydighedContext1 context) : base(context)
         {
         }
+
     }
 }

@@ -12,10 +12,18 @@ namespace ProjektRally_Lydighed.Models
         public string Description { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public int ExerciseNr { get; set; }
-
+        /*
         [ForeignKey("EquipmentId")]
         public Equipment? Equipment { get; set; }
         public Category? Category { get; set; }
+        */
 
+        // Fremmednøgle for Equipment
+        public int EquipmentId { get; set; }
+        [ForeignKey("EquipmentId")]
+        public Equipment Equipment { get; set; }
+
+        // Navigationsegenskaber
+        public ICollection<Sign> Signs { get; set; }
     }
 }

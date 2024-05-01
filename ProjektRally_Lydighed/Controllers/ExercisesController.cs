@@ -12,9 +12,9 @@ namespace ProjektRally_Lydighed.Controllers
 {
     public class ExercisesController : Controller
     {
-        private readonly ProjektRally_LydighedContext _context;
+        private readonly ProjektRally_LydighedContext1 _context;
 
-        public ExercisesController(ProjektRally_LydighedContext context)
+        public ExercisesController(ProjektRally_LydighedContext1 context)
         {
             _context = context;
         }

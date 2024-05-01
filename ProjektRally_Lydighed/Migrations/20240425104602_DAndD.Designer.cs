@@ -12,8 +12,8 @@ using ProjektRally_Lydighed.Data;
 namespace ProjektRally_Lydighed.Migrations
 {
     [DbContext(typeof(ProjektRally_LydighedContext1))]
-    [Migration("20240410162203_Rally")]
-    partial class Rally
+    [Migration("20240425104602_DAndD")]
+    partial class DAndD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace ProjektRally_Lydighed.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EquipmentId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("ExerciseNr")
@@ -105,7 +105,7 @@ namespace ProjektRally_Lydighed.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ExerciseId")
+                    b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Rotation")
@@ -115,7 +115,7 @@ namespace ProjektRally_Lydighed.Migrations
                     b.Property<int>("SignNumber")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TrackId")
+                    b.Property<int>("TrackId")
                         .HasColumnType("int");
 
                     b.Property<string>("XCoordinate")
@@ -172,7 +172,7 @@ namespace ProjektRally_Lydighed.Migrations
                     b.ToTable("Track");
                 });
 
-            modelBuilder.Entity("Rally_Lydighed.Models.User", b =>
+            modelBuilder.Entity("ProjektRally_Lydighed.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,15 +207,15 @@ namespace ProjektRally_Lydighed.Migrations
 
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Exercise", b =>
                 {
-                    b.HasOne("ProjektRally_Lydighed.Models.Category", "Category")
+                    b.HasOne("ProjektRally_Lydighed.Models.Category", null)
                         .WithMany("Exercises")
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("ProjektRally_Lydighed.Models.Equipment", "Equipment")
                         .WithMany("Exercises")
-                        .HasForeignKey("EquipmentId");
-
-                    b.Navigation("Category");
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Equipment");
                 });
@@ -223,12 +223,16 @@ namespace ProjektRally_Lydighed.Migrations
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Sign", b =>
                 {
                     b.HasOne("ProjektRally_Lydighed.Models.Exercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId");
+                        .WithMany("Signs")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProjektRally_Lydighed.Models.Track", "Track")
                         .WithMany("Signs")
-                        .HasForeignKey("TrackId");
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Exercise");
 
@@ -241,7 +245,7 @@ namespace ProjektRally_Lydighed.Migrations
                         .WithMany("Tracks")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("Rally_Lydighed.Models.User", null)
+                    b.HasOne("ProjektRally_Lydighed.Models.User", null)
                         .WithMany("Tracks")
                         .HasForeignKey("UserId");
 
@@ -260,12 +264,17 @@ namespace ProjektRally_Lydighed.Migrations
                     b.Navigation("Exercises");
                 });
 
+            modelBuilder.Entity("ProjektRally_Lydighed.Models.Exercise", b =>
+                {
+                    b.Navigation("Signs");
+                });
+
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Track", b =>
                 {
                     b.Navigation("Signs");
                 });
 
-            modelBuilder.Entity("Rally_Lydighed.Models.User", b =>
+            modelBuilder.Entity("ProjektRally_Lydighed.Models.User", b =>
                 {
                     b.Navigation("Tracks");
                 });

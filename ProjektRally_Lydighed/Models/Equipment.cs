@@ -7,7 +7,8 @@ namespace ProjektRally_Lydighed.Models
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)] public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)] 
+        public int Id { get; set; }
         public string Name { get; set; }
         public string? Image { get; set; }
         public ICollection<Exercise> Exercises { get; set; }

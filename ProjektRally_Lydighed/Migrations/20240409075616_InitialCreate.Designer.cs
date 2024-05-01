@@ -10,7 +10,7 @@ using ProjektRally_Lydighed.Data;
 
 namespace ProjektRally_Lydighed.Migrations
 {
-    [DbContext(typeof(ProjektRally_LydighedContext))]
+    [DbContext(typeof(ProjektRally_LydighedContext1))]
     [Migration("20240409075616_InitialCreate")]
     partial class InitialCreate
     {

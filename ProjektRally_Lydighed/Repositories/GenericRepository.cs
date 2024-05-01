@@ -6,9 +6,9 @@ namespace ProjektRally_Lydighed.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly ProjektRally_LydighedContext _context;
+        protected readonly ProjektRally_LydighedContext1 _context;
 
-        public GenericRepository(ProjektRally_LydighedContext context)
+        public GenericRepository(ProjektRally_LydighedContext1 context)
         {
             _context = context;
         }

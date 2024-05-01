@@ -230,8 +230,8 @@ namespace ProjektRally_Lydighed.Models
           }*/
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new ProjektRally_LydighedContext(
-                serviceProvider.GetRequiredService<DbContextOptions<ProjektRally_LydighedContext>>()))
+            using (var context = new ProjektRally_LydighedContext1(
+                serviceProvider.GetRequiredService<DbContextOptions<ProjektRally_LydighedContext1>>()))
             {
                 // Tjek om der allerede er nogen brugere.
                 if (!context.User.Any())
@@ -249,7 +249,7 @@ namespace ProjektRally_Lydighed.Models
             }
         }
 
-        private static void SeedUsers(ProjektRally_LydighedContext context)
+        private static void SeedUsers(ProjektRally_LydighedContext1 context)
         {
             context.User.AddRange(
                 new User
@@ -273,7 +273,7 @@ namespace ProjektRally_Lydighed.Models
             context.SaveChanges();
         }
 
-        private static void SeedTracks(ProjektRally_LydighedContext context)
+        private static void SeedTracks(ProjektRally_LydighedContext1 context)
         {
             var categoryType1 = CategoryType.Begynder;
             var categoryType2 = CategoryType.Champion;
