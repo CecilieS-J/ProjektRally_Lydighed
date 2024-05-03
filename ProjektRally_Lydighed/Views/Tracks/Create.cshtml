@@ -7,43 +7,45 @@
 <h1>Create</h1>
 
 <div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <!-- Placeholder til pile -->
-</div>
-
-<div id="arrow1" class="arrow" draggable="true" ondragstart="drag(event)">
-    ←
-</div>
-
-<div id="arrow2" class="arrow" draggable="true" ondragstart="drag(event)">
-    ↑
-</div>
-
-<div id="arrow3" class="arrow" draggable="true" ondragstart="drag(event)">
-    →
-</div>
-
-<div id="arrow4" class="arrow" draggable="true" ondragstart="drag(event)">
-    ↓
+    <img src="~/Images/BaneSkabalon.png" alt="Baneskabalon" width="800" height="600" style="float: left; margin-right: 10px;" />
+    <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
+    <img id="element1" class="element" src="~/SignImages/3.png" alt="Element 1" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 10px; top: 10px;" />
+    <img id="element2" class="element" src="~/SignImages/4.png" alt="Element 2" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
+    <!-- Tilføj flere billeder efter behov -->
 </div>
 
 @section Scripts {
     <style>
         .canvas {
-            width: 800px;
-            height: 600px;
-            border: 1px solid #000;
             position: relative;
         }
 
-        .arrow {
-            width: 20px;
-            height: 20px;
-            background-color: #ccc;
-            border: 1px solid #000;
-            text-align: center;
-            line-height: 20px;
+        .element {
             position: absolute;
         }
     </style>
-}
 
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            var element = document.getElementById(data);
+            var canvas = document.getElementById("canvas");
+            var rect = canvas.getBoundingClientRect();
+            var offsetX = event.clientX - rect.left;
+            var offsetY = event.clientY - rect.top;
+
+            element.style.left = offsetX + "px";
+            element.style.top = offsetY + "px";
+            canvas.appendChild(element);
+        }
+    </script>
+}
