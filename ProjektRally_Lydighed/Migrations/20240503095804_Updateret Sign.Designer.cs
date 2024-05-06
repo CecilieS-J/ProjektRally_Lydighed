@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektRally_Lydighed.Data;
 
@@ -11,9 +12,11 @@ using ProjektRally_Lydighed.Data;
 namespace ProjektRally_Lydighed.Migrations
 {
     [DbContext(typeof(ProjektRally_LydighedContext1))]
-    partial class ProjektRally_LydighedContextModelSnapshot : ModelSnapshot
+    [Migration("20240503095804_Updateret Sign")]
+    partial class UpdateretSign
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,30 +317,14 @@ namespace ProjektRally_Lydighed.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ExerciseId")
+                    b.Property<int>("ExerciseId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Rotation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SignNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("TrackId")
                         .HasColumnType("int");
-
-                    b.Property<string>("XCoordinate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YCoordinate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -372,10 +359,6 @@ namespace ProjektRally_Lydighed.Migrations
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("Template")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -490,15 +473,19 @@ namespace ProjektRally_Lydighed.Migrations
 
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Sign", b =>
                 {
-                    b.HasOne("ProjektRally_Lydighed.Models.Exercise", null)
+                    b.HasOne("ProjektRally_Lydighed.Models.Exercise", "Exercise")
                         .WithMany("Signs")
-                        .HasForeignKey("ExerciseId");
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProjektRally_Lydighed.Models.Track", "Track")
                         .WithMany("Signs")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Exercise");
 
                     b.Navigation("Track");
                 });

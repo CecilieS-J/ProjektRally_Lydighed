@@ -11,12 +11,15 @@ namespace ProjektRally_Lydighed.Controllers
     public class TracksController : Controller
     {
         private readonly ITrackRepository _trackRepository;
-        
+        private readonly ISignRepository _signRepository;
 
-        public TracksController(ITrackRepository trackRepository)
+
+
+        public TracksController(ITrackRepository trackRepository, ISignRepository signRepository)
         {
             _trackRepository = trackRepository;
-            
+            _signRepository = signRepository;
+
         }
 
         // Action for displaying list of tracks
@@ -49,20 +52,101 @@ namespace ProjektRally_Lydighed.Controllers
             return View();
         }
 
-        // Action for handling creation of a new track
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+        public async Task<IActionResult> Create([Bind("Name, Comment, Location, ReleaseDate")] Track track, IFormFile trackTemplate)
         {
-            // Check if the model state is valid before proceeding
             if (ModelState.IsValid)
             {
-                await _trackRepository.AddAsync(track);
+                // Gem de grundlæggende oplysninger om sporet
+                await _trackRepository.SaveTrackAsync(track);
+
+                // Gem baneskabelonen (hvis den er blevet uploadet)
+                if (trackTemplate != null && trackTemplate.Length > 0)
+                {
+                    // Konverter baneskabelonen til en byte-array
+                    byte[] trackTemplateBytes;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await trackTemplate.CopyToAsync(memoryStream);
+                        trackTemplateBytes = memoryStream.ToArray();
+                    }
+
+                    // Gem baneskabelonen i din database
+                    track.Template = trackTemplateBytes;
+                }
+
+                // Hent alle placerede elementer på banen og gem dem
+                var elements = Request.Form["element"];
+                foreach (var elementId in elements)
+                {
+                    if (int.TryParse(elementId, out int signId))
+                    {
+                        var sign = await _signRepository.GetByIdAsync(signId);
+                        if (sign != null)
+                        {
+                            // Tilføj det placerede element til det gemte spor
+                            track.Signs.Add(sign);
+                        }
+                    }
+                }
+
+                // Opdater spor i databasen med de gemte elementer
+                await _trackRepository.UpdateAsync(track);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(track);
         }
 
+        /* // POST: Tracks/Create
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+         {
+             if (ModelState.IsValid)
+             {
+                 // Gem sporet i databasen
+                 await _trackRepository.SaveTrackAsync(track);
+
+                 // Hent alle placerede elementer på banen og gem dem
+                 var elements = Request.Form["element"];
+                 foreach (var elementId in elements)
+                 {
+                     if (int.TryParse(elementId, out int signId))
+                     {
+                         var sign = await _signRepository.GetByIdAsync(signId);
+                         if (sign != null)
+                         {
+                             // Tilføj det placerede element til det gemte spor
+                             track.Signs.Add(sign);
+                         }
+                     }
+                 }
+
+                 // Opdater spor i databasen med de gemte elementer
+                 await _trackRepository.UpdateAsync(track);
+
+                 return RedirectToAction(nameof(Index));
+             }
+             return View(track);
+         }
+
+
+           // Action for handling creation of a new track
+              [HttpPost]
+              [ValidateAntiForgeryToken]
+              public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+              {
+                  // Check if the model state is valid before proceeding
+                  if (ModelState.IsValid)
+                  {
+                      await _trackRepository.SaveTrackAsync(track);
+                      return RedirectToAction(nameof(Index));
+                  }
+                  return View(track);
+              }
+            */
         // Action for displaying form to edit an existing track
         public async Task<IActionResult> Edit(int? id)
         {

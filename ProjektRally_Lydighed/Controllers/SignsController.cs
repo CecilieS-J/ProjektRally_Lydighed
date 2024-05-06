@@ -6,23 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektRally_Lydighed.Data;
+using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
+using ProjektRally_Lydighed.Repositories;
 
 namespace ProjektRally_Lydighed.Controllers
 {
     public class SignsController : Controller
     {
-        private readonly ProjektRally_LydighedContext1 _context;
+        private readonly ISignRepository _signRepository;
 
-        public SignsController(ProjektRally_LydighedContext1 context)
+        public SignsController(ISignRepository signRepository)
         {
-            _context = context;
+            _signRepository = signRepository;
         }
 
         // GET: Signs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Sign.ToListAsync());
+            return View(await _signRepository.GetAllAsync());
         }
 
         // GET: Signs/Details/5
@@ -33,8 +35,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var sign = await _context.Sign
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var sign = await _signRepository.GetByIdAsync(id.Value);
             if (sign == null)
             {
                 return NotFound();
@@ -54,12 +55,11 @@ namespace ProjektRally_Lydighed.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
+        public async Task<IActionResult> Create([Bind("Id,SignNumber")] Sign sign)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sign);
-                await _context.SaveChangesAsync();
+                await _signRepository.AddAsync(sign);
                 return RedirectToAction(nameof(Index));
             }
             return View(sign);
@@ -73,7 +73,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var sign = await _context.Sign.FindAsync(id);
+            var sign = await _signRepository.GetByIdAsync(id.Value);
             if (sign == null)
             {
                 return NotFound();
@@ -97,12 +97,12 @@ namespace ProjektRally_Lydighed.Controllers
             {
                 try
                 {
-                    _context.Update(sign);
-                    await _context.SaveChangesAsync();
+                    await _signRepository.UpdateAsync(sign);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SignExists(sign.Id))
+                    if (!await SignExistsAsync(sign.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +124,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var sign = await _context.Sign
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var sign = await _signRepository.GetByIdAsync(id.Value);
             if (sign == null)
             {
                 return NotFound();
@@ -139,19 +138,19 @@ namespace ProjektRally_Lydighed.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sign = await _context.Sign.FindAsync(id);
+            var sign = await _signRepository.GetByIdAsync(id);
             if (sign != null)
             {
-                _context.Sign.Remove(sign);
+                await _signRepository.DeleteAsync(sign);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+              return RedirectToAction(nameof(Index));
         }
 
-        private bool SignExists(int id)
+        private async Task<bool> SignExistsAsync(int id)
         {
-            return _context.Sign.Any(e => e.Id == id);
+            var sign = await _signRepository.GetByIdAsync(id);
+            return sign != null;
         }
     }
 }

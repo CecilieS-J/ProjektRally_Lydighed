@@ -1,18 +1,65 @@
 ﻿@model ProjektRally_Lydighed.Models.Track
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h1>Create</h1>
+<head>
+    <title>Din side</title>
+    <style>
+        /* Tilføj styling til hovedcontaineren */
+        .main-container {
+            min-height: 900vh; /* Minimumshøjde på 100% af viewportens højde */
+            padding-bottom: 50px; /* Ekstra bundplads til footer eller andre faste elementer */
+            overflow-y: auto; /* Tillad lodret rulning, hvis indholdet er større end skærmen */
+        }
+    </style>
+</head>
 
-<div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <img src="~/Images/BaneSkabalon.png" alt="Baneskabalon" width="800" height="600" style="float: left; margin-right: 10px;" />
-    <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
-    <img id="element1" class="element" src="~/SignImages/3.png" alt="Element 1" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 10px; top: 10px;" />
-    <img id="element2" class="element" src="~/SignImages/4.png" alt="Element 2" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
-    <!-- Tilføj flere billeder efter behov -->
-</div>
+<form asp-action="Create" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label for="name">Navn</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="comment">Kommentar</label>
+                    <input asp-for="Comment" class="form-control" />
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="location">Placering</label>
+                    <input asp-for="Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="release-date">Frigivelsesdato</label>
+                    <input asp-for="ReleaseDate" class="form-control" />
+                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <img src="~/Images/BaneSkabalon.png" alt="Baneskabalon" width="800" height="600" style="float: left; margin-right: 10px;" />
+        <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
+        <img id="element1" class="element" src="~/SignImages/3.png" alt="Element 1" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 10px; top: 10px;" />
+        <input type="hidden" name="element" value="1" /> <!-- Skjult inputfelt til Element 1 -->
+
+        <img id="element2" class="element" src="~/SignImages/4.png" alt="Element 2" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
+        <input type="hidden" name="element" value="2" /> <!-- Skjult inputfelt til Element 2 -->
+        <!-- Tilføj flere billeder efter behov -->
+    </div>
+
+    <div class="form-group">
+        <div class="text-right" style="position: fixed; bottom: 20px; right: 20px;">
+            <input type="submit" value="Gem" class="btn btn-primary btn-lg" />
+        </div>
+    </div>
+</form>
+
 
 @section Scripts {
     <style>
@@ -22,6 +69,14 @@
 
         .element {
             position: absolute;
+        }
+
+        .btn-lg {
+            font-size: 1.25rem;
+        }
+
+        .container {
+            margin-bottom: 20px;
         }
     </style>
 
@@ -46,6 +101,16 @@
             element.style.left = offsetX + "px";
             element.style.top = offsetY + "px";
             canvas.appendChild(element);
+        }
+
+        function validateForm() {
+            var canvas = document.getElementById("canvas");
+            var elements = canvas.getElementsByClassName("element");
+            if (elements.length === 0) {
+                alert("Please place elements on the canvas before submitting.");
+                return false;
+            }
+            return true;
         }
     </script>
 }

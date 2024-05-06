@@ -15,15 +15,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.SignNumber)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.XCoordinate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.YCoordinate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rotation)
-            </th>
+           
             <th></th>
         </tr>
     </thead>
@@ -33,15 +25,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SignNumber)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.XCoordinate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YCoordinate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rotation)
-            </td>
+          
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

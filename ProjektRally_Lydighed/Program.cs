@@ -17,6 +17,10 @@ builder.Services.AddDefaultIdentity<ProjektRally_Lydighed1>(options => options.S
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+builder.Services.AddScoped<ISignRepository, SignRepository>();
+
+
+
 
 
 var app = builder.Build();

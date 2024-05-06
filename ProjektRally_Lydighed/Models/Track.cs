@@ -16,6 +16,6 @@ namespace ProjektRally_Lydighed.Models
        [ForeignKey("CategoryId")]
        public Category? Category { get; set; }
        public ICollection<Sign>? Signs { get; set; }
-
-     }
+        public byte[] Template { get; set; }
+    }
 }
