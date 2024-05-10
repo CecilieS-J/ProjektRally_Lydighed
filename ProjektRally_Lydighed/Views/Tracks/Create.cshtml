@@ -12,7 +12,6 @@
         }
     </style>
 </head>
-
 <form asp-action="Create" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
     <div class="container">
         <div class="row">
@@ -38,18 +37,31 @@
                     <input asp-for="ReleaseDate" class="form-control" />
                     <span asp-validation-for="ReleaseDate" class="text-danger"></span>
                 </div>
+
+                <!-- Skjulte inputfelter til tegnbillederne -->
+                <input type="hidden" name="Image1" id="image1" />
+                <input type="hidden" name="Image2" id="image2" />
+                <!-- Tilføj flere inputfelter efter behov -->
             </div>
         </div>
     </div>
 
     <div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
         <img src="~/Images/BaneSkabalon.png" alt="Baneskabalon" width="800" height="600" style="float: left; margin-right: 10px;" />
-        <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
-        <img id="element1" class="element" src="~/SignImages/3.png" alt="Element 1" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 10px; top: 10px;" />
-        <input type="hidden" name="element" value="1" /> <!-- Skjult inputfelt til Element 1 -->
+        <img id="element1" class="element" src="~/SignImages/1.png" alt="Element 1" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
+        <input type="hidden" name="element" value="1" /> 
 
-        <img id="element2" class="element" src="~/SignImages/4.png" alt="Element 2" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
-        <input type="hidden" name="element" value="2" /> <!-- Skjult inputfelt til Element 2 -->
+        <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
+        <img id="element2" class="element" src="~/SignImages/2.png" alt="Element 2" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 10px; top: 10px;" />
+        <input type="hidden" name="element" value="2" /> 
+
+        <img id="element3" class="element" src="~/SignImages/3.png" alt="Element 3" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
+        <input type="hidden" name="element" value="3" /> <!-- Skjult inputfelt til Element 2 -->
+        <!-- Tilføj flere billeder efter behov -->
+
+       
+        <img id="element4" class="element" src="~/SignImages/4.png" alt="Element 4" draggable="true" ondragstart="drag(event)" style="position: absolute; right: 70px; top: 10px;" />
+        <input type="hidden" name="element" value="4" />
         <!-- Tilføj flere billeder efter behov -->
     </div>
 
@@ -59,6 +71,7 @@
         </div>
     </div>
 </form>
+
 
 
 @section Scripts {
@@ -101,6 +114,11 @@
             element.style.left = offsetX + "px";
             element.style.top = offsetY + "px";
             canvas.appendChild(element);
+
+            // Opdater skjult inputfelt med stien til billedet
+            var imagePath = element.src.replace(window.location.origin, "");
+            var inputFieldName = "imagePath_" + data; // Brug et unikt navn baseret på billedets id
+            document.getElementById(inputFieldName).value = imagePath;
         }
 
         function validateForm() {
@@ -112,5 +130,6 @@
             }
             return true;
         }
+
     </script>
 }
