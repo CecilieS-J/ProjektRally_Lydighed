@@ -5,6 +5,5 @@ namespace ProjektRally_Lydighed.Interfaces
 {
     public interface ISignRepository : IGenericRepository<Sign>
     {
-        Task AddSignAsync(Sign sign);
     }
 }

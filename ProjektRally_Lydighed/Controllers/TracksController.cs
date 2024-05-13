@@ -4,11 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
 using ProjektRally_Lydighed.Controllers;
-using Microsoft.Extensions.Logging;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-using Microsoft.EntityFrameworkCore;
-using AspNetCore;
-
+using ProjektRally_Lydighed.Repositories;
 
 namespace ProjektRally_Lydighed.Controllers
 {
@@ -16,18 +12,15 @@ namespace ProjektRally_Lydighed.Controllers
     {
         private readonly ITrackRepository _trackRepository;
         private readonly ISignRepository _signRepository;
-        private readonly ILogger<TracksController> _logger;
 
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        // Injicer IWebHostEnvironment i din controllerens konstruktør
-        public TracksController(ITrackRepository trackRepository, ISignRepository signRepository, ILogger<TracksController> logger, IWebHostEnvironment hostingEnvironment)
+
+
+        public TracksController(ITrackRepository trackRepository, ISignRepository signRepository)
         {
             _trackRepository = trackRepository;
             _signRepository = signRepository;
-            _logger = logger;
-            _hostingEnvironment = hostingEnvironment;
-        }
 
+        }
 
         // Action for displaying list of tracks
         public async Task<IActionResult> Index()
@@ -58,137 +51,103 @@ namespace ProjektRally_Lydighed.Controllers
         {
             return View();
         }
-        private async Task<byte[]> GetImageData(string imagePath)
-        {
-            if (!string.IsNullOrEmpty(imagePath))
-            {
-                // Konverter billedfilen til en byte-array
-                var imageFilePath = Path.Combine(_hostingEnvironment.WebRootPath, imagePath.TrimStart('/'));
-                using (var stream = new FileStream(imageFilePath, FileMode.Open))
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await stream.CopyToAsync(memoryStream);
-                        return memoryStream.ToArray();
-                    }
-                }
-            }
-            return null;
-        }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name, Comment, Location, ReleaseDate")] Track track, List<IFormFile> signImages)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    // Gem de grundlæggende oplysninger om sporet
-                    await _trackRepository.SaveTrackAsync(track);
-
-                    // Gem tegnbillederne
-                    foreach (var image in signImages)
-                    {
-                        if (image.Length > 0)
-                        {
-                            byte[] imageData;
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                await image.CopyToAsync(memoryStream);
-                                imageData = memoryStream.ToArray();
-                            }
-
-                            var sign = new Sign
-                            {
-                                ImageData = imageData,
-                                ImageContentType = image.ContentType,
-                                TrackId = track.Id
-                            };
-
-                            await _signRepository.AddAsync(sign);
-                        }
-                    }
-
-                    return RedirectToAction(nameof(Index));
-                }
-                return View(track);
-            }
-            catch (Exception ex)
-            {
-                // Log fejl og håndter fejlen
-                _logger.LogError(ex, "Fejl under oprettelse af spor.");
-                ModelState.AddModelError(string.Empty, "Der opstod en fejl under gemmeprocessen. Prøv igen senere.");
-                return View(track);
-            }
-        }
-
-
-
-        /*[HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name, Comment, Location, ReleaseDate")] Track track, IFormFile trackTemplate)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                // Gem de grundlæggende oplysninger om sporet
+                await _trackRepository.SaveTrackAsync(track);
+
+                // Gem baneskabelonen (hvis den er blevet uploadet)
+                if (trackTemplate != null && trackTemplate.Length > 0)
                 {
-                    // Gem de grundlæggende oplysninger om sporet
-                    await _trackRepository.SaveTrackAsync(track);
-
-                    // Gem baneskabelonen (hvis den er blevet uploadet)
-                    if (trackTemplate != null && trackTemplate.Length > 0)
+                    // Konverter baneskabelonen til en byte-array
+                    byte[] trackTemplateBytes;
+                    using (var memoryStream = new MemoryStream())
                     {
-                        // Konverter baneskabelonen til en byte-array
-                        byte[] trackTemplateBytes;
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await trackTemplate.CopyToAsync(memoryStream);
-                            trackTemplateBytes = memoryStream.ToArray();
-                        }
-
-                        // Gem baneskabelonen i din database
-                        track.Template = trackTemplateBytes;
+                        await trackTemplate.CopyToAsync(memoryStream);
+                        trackTemplateBytes = memoryStream.ToArray();
                     }
 
-                    // Hent alle placerede elementer på banen og gem dem
-                    var elements = Request.Form["element"];
-                    foreach (var elementId in elements)
-                    {
-                        if (int.TryParse(elementId, out int signId))
-                        {
-                            var sign = await _signRepository.GetByIdAsync(signId);
-                            if (sign != null)
-                            {
-                                // Tilføj det placerede element til det gemte spor
-                                track.Signs.Add(sign);
-                            }
-                        }
-                    }
-
-                    // Opdater spor i databasen med de gemte elementer
-                    await _trackRepository.UpdateAsync(track);
-
-                    return RedirectToAction(nameof(Index));
+                    // Gem baneskabelonen i din database
+                    track.Template = trackTemplateBytes;
                 }
-                return View(track);
-            }
-            catch (Exception ex)
-            {
-                // Log fejlmeddelelse
-                _logger.LogError(ex, "Fejl under oprettelse af spor.");
 
-                // Tilføj en fejlmeddelelse til modelens fejltilstand
-                ModelState.AddModelError(string.Empty, "Der opstod en fejl under gemmeprocessen. Prøv igen senere.");
+                // Hent alle placerede elementer på banen og gem dem
+                var elements = Request.Form["element"];
+                foreach (var elementId in elements)
+                {
+                    if (int.TryParse(elementId, out int signId))
+                    {
+                        var sign = await _signRepository.GetByIdAsync(signId);
+                        if (sign != null)
+                        {
+                            // Tilføj det placerede element til det gemte spor
+                            track.Signs.Add(sign);
+                        }
+                    }
+                }
 
-                // Returner visningen med modelen, der indeholder fejl
-                return View(track);
+                // Opdater spor i databasen med de gemte elementer
+                await _trackRepository.UpdateAsync(track);
+
+                return RedirectToAction(nameof(Index));
             }
+            return View(track);
         }
-        */
+
+        /* // POST: Tracks/Create
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+         {
+             if (ModelState.IsValid)
+             {
+                 // Gem sporet i databasen
+                 await _trackRepository.SaveTrackAsync(track);
+
+                 // Hent alle placerede elementer på banen og gem dem
+                 var elements = Request.Form["element"];
+                 foreach (var elementId in elements)
+                 {
+                     if (int.TryParse(elementId, out int signId))
+                     {
+                         var sign = await _signRepository.GetByIdAsync(signId);
+                         if (sign != null)
+                         {
+                             // Tilføj det placerede element til det gemte spor
+                             track.Signs.Add(sign);
+                         }
+                     }
+                 }
+
+                 // Opdater spor i databasen med de gemte elementer
+                 await _trackRepository.UpdateAsync(track);
+
+                 return RedirectToAction(nameof(Index));
+             }
+             return View(track);
+         }
 
 
+           // Action for handling creation of a new track
+              [HttpPost]
+              [ValidateAntiForgeryToken]
+              public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
+              {
+                  // Check if the model state is valid before proceeding
+                  if (ModelState.IsValid)
+                  {
+                      await _trackRepository.SaveTrackAsync(track);
+                      return RedirectToAction(nameof(Index));
+                  }
+                  return View(track);
+              }
+            */
+        // Action for displaying form to edit an existing track
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

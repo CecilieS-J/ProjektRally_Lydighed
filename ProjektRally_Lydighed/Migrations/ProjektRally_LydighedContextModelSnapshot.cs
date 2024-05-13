@@ -317,9 +317,9 @@ namespace ProjektRally_Lydighed.Migrations
                     b.Property<int?>("ExerciseId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("ImageData")
+                    b.Property<string>("ImagePath")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rotation")
                         .IsRequired()
