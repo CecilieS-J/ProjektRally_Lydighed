@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Signs
+        // Denne metode er tilgængelig for alle brugere
+        [AllowAnonymous]
+
         public async Task<IActionResult> Index()
         {
             return View(await _signRepository.GetAllAsync());
@@ -45,6 +49,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Signs/Create
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -53,6 +60,9 @@ namespace ProjektRally_Lydighed.Controllers
         // POST: Signs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,SignNumber")] Sign sign)
@@ -66,6 +76,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Signs/Edit/5
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,6 +97,9 @@ namespace ProjektRally_Lydighed.Controllers
         // POST: Signs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
@@ -117,6 +133,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Signs/Delete/5
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,6 +153,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // POST: Signs/Delete/5
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

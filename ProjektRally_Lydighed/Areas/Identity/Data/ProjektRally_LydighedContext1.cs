@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProjektRally_Lydighed.Areas.Identity.Data;
+using static ProjektRally_Lydighed.Data.ProjektRally_LydighedContext1.ApplicationUserEntityConfiguration;
+using System.Reflection.Emit;
 
 namespace ProjektRally_Lydighed.Data;
 
@@ -13,6 +15,7 @@ public class ProjektRally_LydighedContext1 : IdentityDbContext<ProjektRally_Lydi
     {
     }
 
+   
     public DbSet<ProjektRally_Lydighed.Models.User> User { get; set; } = default!;
     public DbSet<ProjektRally_Lydighed.Models.Track> Track { get; set; } = default!;
     public DbSet<ProjektRally_Lydighed.Models.Sign> Sign { get; set; } = default!;
@@ -27,6 +30,7 @@ public class ProjektRally_LydighedContext1 : IdentityDbContext<ProjektRally_Lydi
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
         builder.ApplyConfiguration(new ApplicationUserEntityConfiguration());
+        builder.ApplyConfiguration(new RoleConfiguration());
     }
     public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ProjektRally_Lydighed1>
     {
@@ -34,6 +38,25 @@ public class ProjektRally_LydighedContext1 : IdentityDbContext<ProjektRally_Lydi
         { 
             builder.Property( x => x.FirstName).HasMaxLength(50);
             builder.Property(x => x.LastName).HasMaxLength(50);
+        }
+        public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
+        {
+            public void Configure(EntityTypeBuilder<IdentityRole> builder)
+            {
+                builder.HasData(
+                new IdentityRole
+                {
+                    Name = "Member",
+                    NormalizedName = "MEMBER"
+                },
+                new IdentityRole
+                {
+                    Name = "Administrator",
+                    NormalizedName = "ADMINISTRATOR"
+                });
+
+               
+            }
         }
     }
 }

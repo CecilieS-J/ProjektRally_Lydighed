@@ -5,6 +5,7 @@ using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
 using ProjektRally_Lydighed.Controllers;
 using ProjektRally_Lydighed.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjektRally_Lydighed.Controllers
 {
@@ -23,6 +24,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for displaying list of tracks
+        // Denne metode er tilgængelig for alle brugere
+        [AllowAnonymous]
+
         public async Task<IActionResult> Index()
         {
             var tracks = await _trackRepository.GetAllAsync();
@@ -30,6 +34,8 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for displaying details of a track
+        // Denne metode er tilgængelig for alle brugere
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,14 +53,22 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for displaying form to create a new track
+
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
+
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name, Comment, Location, ReleaseDate")] Track track, IFormFile trackTemplate)
+        public async Task<IActionResult> CreateNew([Bind("Name, Comment, Location, ReleaseDate")] Track track, IFormFile trackTemplate)
         {
             if (ModelState.IsValid)
             {
@@ -99,42 +113,14 @@ namespace ProjektRally_Lydighed.Controllers
             return View(track);
         }
 
-        /* // POST: Tracks/Create
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-         public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
-         {
-             if (ModelState.IsValid)
-             {
-                 // Gem sporet i databasen
-                 await _trackRepository.SaveTrackAsync(track);
-
-                 // Hent alle placerede elementer på banen og gem dem
-                 var elements = Request.Form["element"];
-                 foreach (var elementId in elements)
-                 {
-                     if (int.TryParse(elementId, out int signId))
-                     {
-                         var sign = await _signRepository.GetByIdAsync(signId);
-                         if (sign != null)
-                         {
-                             // Tilføj det placerede element til det gemte spor
-                             track.Signs.Add(sign);
-                         }
-                     }
-                 }
-
-                 // Opdater spor i databasen med de gemte elementer
-                 await _trackRepository.UpdateAsync(track);
-
-                 return RedirectToAction(nameof(Index));
-             }
-             return View(track);
-         }
 
 
-           // Action for handling creation of a new track
-              [HttpPost]
+
+        // Action for handling creation of a new track
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
+        [HttpPost]
               [ValidateAntiForgeryToken]
               public async Task<IActionResult> Create([Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
               {
@@ -146,8 +132,11 @@ namespace ProjektRally_Lydighed.Controllers
                   }
                   return View(track);
               }
-            */
+
         // Action for displaying form to edit an existing track
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -164,6 +153,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for handling editing of an existing track
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Comment,Location,ReleaseDate")] Track track)
@@ -196,6 +188,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for displaying confirmation page before deleting a track
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -213,6 +208,9 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // Action for handling deletion of a track
+        // Denne metode er kun tilgængelig for godkendte brugere
+
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -233,47 +231,12 @@ namespace ProjektRally_Lydighed.Controllers
             return track != null;
         }
 
-       /* // Handling til at håndtere træk-og-slip-operationer
-        [HttpPost]
-        public async Task<IActionResult> DragAndDrop(int trackId, int categoryId)
-        {
-            try
-            {
-                // Hent sporet fra databasen
-                var track = await _trackRepository.GetByIdAsync(trackId);
-                if (track == null)
-                {
-                    return NotFound();
-                }
-
-                // Find kategorien baseret på categoryId
-                var category = await _categoryRepository.GetByIdAsync(categoryId);
-                if (category == null)
-                {
-                    return NotFound();
-                }
-
-                // Opdater sporet med den nye kategori
-                track.Category = category;
-
-                // Gem ændringerne
-                await _trackRepository.UpdateAsync(track);
-
-                // Returner en bekræftelsesmeddelelse eller anden relevant respons
-                return Ok("Træk-og-slip-operationen blev udført med succes.");
-            }
-            catch (Exception ex)
-            {
-                // Håndter eventuelle fejl og returner en passende respons
-                return StatusCode(500, $"Fejl ved håndtering af træk-og-slip-operationen: {ex.Message}");
-            }
-        }*/
-
+      
     }
 }
+/*
 
-
-/*using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProjektRally_Lydighed.Data;
 using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
@@ -421,4 +384,4 @@ namespace ProjektRally_Lydighed.Controllers
         }
     }
 }
-*/
+      */

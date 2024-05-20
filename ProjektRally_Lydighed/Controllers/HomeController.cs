@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjektRally_Lydighed.Models;
 using System.Diagnostics;
@@ -13,20 +14,11 @@ namespace ProjektRally_Lydighed.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+
+         public IActionResult Index()
        {
             return View();
         }
-
-       /* public IActionResult Profil()
-        {
-            return View();
-        }*/
-
-       /* public IActionResult Track()
-        {
-            return View();
-        }*/
 
         
 
@@ -36,10 +28,19 @@ namespace ProjektRally_Lydighed.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+
         public IActionResult UserProfil()
         {
             return View();
         }
+
+        // Denne metode er kun tilgængelig for administratorer
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AdminOnly()
+        {
+            return View();
+        }
+
 
 
     }

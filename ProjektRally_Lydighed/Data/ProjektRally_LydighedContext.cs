@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-/*
+
 namespace ProjektRally_Lydighed.Data
 {
     public class ProjektRally_LydighedContext : DbContext
@@ -17,4 +17,4 @@ namespace ProjektRally_Lydighed.Data
         public DbSet<ProjektRally_Lydighed.Models.Category> Category { get; set; } = default!;
         public DbSet<ProjektRally_Lydighed.Models.Equipment> Equipment { get; set; } = default!;
     }
-}*/
+}

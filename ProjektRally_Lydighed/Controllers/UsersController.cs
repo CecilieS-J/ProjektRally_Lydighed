@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Users
+        // Denne metode er kun tilgængelig for administratorer
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.User.ToListAsync());
@@ -61,6 +64,16 @@ namespace ProjektRally_Lydighed.Controllers
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+
+            // Log valideringsfejl
+            foreach (var modelStateKey in ModelState.Keys)
+            {
+                var modelStateVal = ModelState[modelStateKey];
+                foreach (var error in modelStateVal.Errors)
+                {
+                    Console.WriteLine($"Error in {modelStateKey}: {error.ErrorMessage}");
+                }
             }
             return View(user);
         }

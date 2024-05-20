@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjektRally_Lydighed.Data;
 
@@ -11,9 +12,11 @@ using ProjektRally_Lydighed.Data;
 namespace ProjektRally_Lydighed.Migrations
 {
     [DbContext(typeof(ProjektRally_LydighedContext1))]
-    partial class ProjektRally_LydighedContextModelSnapshot : ModelSnapshot
+    [Migration("20240519140035_InsertedRoles")]
+    partial class InsertedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

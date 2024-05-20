@@ -1,6 +1,5 @@
 ﻿@model ProjektRally_Lydighed.Models.Track
 
-
 <head>
     <title>Din side</title>
     <style>
@@ -41,7 +40,6 @@
             </div>
         </div>
     </div>
-
     <div id="canvas" class="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">
         <img src="~/Images/BaneSkabalon.png" alt="Baneskabalon" width="800" height="600" style="float: left; margin-right: 10px;" />
         <!-- Placeholder til de elementer, som brugeren kan trække og slippe -->
@@ -52,14 +50,13 @@
         <input type="hidden" name="element" value="2" /> <!-- Skjult inputfelt til Element 2 -->
         <!-- Tilføj flere billeder efter behov -->
     </div>
-
     <div class="form-group">
         <div class="text-right" style="position: fixed; bottom: 20px; right: 20px;">
             <input type="submit" value="Gem" class="btn btn-primary btn-lg" />
         </div>
     </div>
+    
 </form>
-
 
 @section Scripts {
     <style>
