@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using ProjektRally_Lydighed.Data;
 using ProjektRally_Lydighed.Models;
 using System;
@@ -240,6 +239,13 @@ namespace ProjektRally_Lydighed.Models
                     // Tilføj seed data for brugere, hvis der ikke er nogen i databasen
                     SeedUsers(context);
                 }
+
+                // Tjek om der allerede er nogen spor.
+                if (!context.Track.Any())
+                {
+                    // Tilføj seed data for spor, hvis der ikke er nogen i databasen
+                    SeedTracks(context);
+                }
             }
         }
 
@@ -264,6 +270,37 @@ namespace ProjektRally_Lydighed.Models
                 }
             );
 
+            context.SaveChanges();
+        }
+
+        private static void SeedTracks(ProjektRally_LydighedContext1 context)
+        {
+            var categoryType1 = CategoryType.Begynder;
+            var categoryType2 = CategoryType.Champion;
+
+            var category1 = new Category { Type = categoryType1, NumberOfExercise = 5, Rules = "Rules for track 1" };
+            var category2 = new Category { Type = categoryType2, NumberOfExercise = 7, Rules = "Rules for track 2" };
+
+            context.Category.AddRange(category1, category2);
+            context.SaveChanges();
+
+            var track1 = new Track
+            {
+                Name = "Track 1",
+                Location = "Location 1",
+                ReleaseDate = DateTime.Now,
+                Category = category1
+            };
+
+            var track2 = new Track
+            {
+                Name = "Track 2",
+                Location = "Location 2",
+                ReleaseDate = DateTime.Now,
+                Category = category2
+            };
+
+            context.Track.AddRange(track1, track2);
             context.SaveChanges();
         }
 

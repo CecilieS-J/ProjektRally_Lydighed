@@ -13,9 +13,16 @@ namespace ProjektRally_Lydighed.Models
         public DateTime ReleaseDate { get; set; }
 
 
-       [ForeignKey("CategoryId")]
-       public Category? Category { get; set; }
-       public ICollection<Sign>? Signs { get; set; }
+          [ForeignKey("CategoryId")]
+          public Category? Category { get; set; }
+
+      /*  [ForeignKey("SignId")]
+        public ICollection<Sign>? Signs { get; set; }
+
+       public Sign? Sign { get; set; }*/
+
         public byte[] Template { get; set; }
+        public ICollection<Sign>? Signs { get; set; }
+
     }
 }

@@ -18,7 +18,7 @@ namespace ProjektRally_Lydighed.Repositories
             // Gem Track-objektet
             if (track.Id == 0)
             {
-                await _context.Track.AddAsync(track);
+                await _context.Track.AddAsync(track);   
             }
             else
             {

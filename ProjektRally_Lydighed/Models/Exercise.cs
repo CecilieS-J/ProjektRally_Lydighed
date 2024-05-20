@@ -8,17 +8,12 @@ namespace ProjektRally_Lydighed.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+
         public string Name { get; set; }
         public string Description { get; set; } = string.Empty;
-        public string Image { get; set; } = string.Empty;
+        public string? Image { get; set; } = string.Empty;
         public int ExerciseNr { get; set; }
-        /*
-        [ForeignKey("EquipmentId")]
-        public Equipment? Equipment { get; set; }
-        public Category? Category { get; set; }
-        */
-
-        // Fremmednøgle for Equipment
+      
         public int EquipmentId { get; set; }
         [ForeignKey("EquipmentId")]
         public Equipment Equipment { get; set; }
