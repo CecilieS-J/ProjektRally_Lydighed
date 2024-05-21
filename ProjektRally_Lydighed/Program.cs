@@ -28,13 +28,32 @@ using ProjektRally_Lydighed.Areas.Identity.Data;
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<ITrackRepository, TrackRepository>();
         builder.Services.AddScoped<ISignRepository, SignRepository>();
-builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
 
 
 
 
         var app = builder.Build();
+
+
+// Seed roles and assign admin role to an existing user
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ProjektRally_Lydighed1>>();
+
+    // Assign admin role to an existing user
+    string userEmail = "sillejohnsen@gmail.com"; // Replace with the email of the existing user
+    var user = await userManager.FindByEmailAsync(userEmail);
+    if (user != null)
+    {
+        var roles = await userManager.GetRolesAsync(user);
+        if (!roles.Contains("Administrator"))
+        {
+            await userManager.AddToRoleAsync(user, "Administrator");
+        }
+    }
+}
+
 
 
 /*using (var scope = app.Services.CreateScope())
@@ -66,11 +85,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapControllerRoute( // Tilføj en ekstra Controller Route for ExerciseController
-    name: "exercise",
-    pattern: "{controller=Exercises}/{action=Index}/{id?}");
+/*app.MapControllerRoute(
+    name: "admin",
+    pattern: "{controller=Admin}/{action=AssignAdminRole}/{email?}");
 
-
+*/
 
 app.MapRazorPages();
 

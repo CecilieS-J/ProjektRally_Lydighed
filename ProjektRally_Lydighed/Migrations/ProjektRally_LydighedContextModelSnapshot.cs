@@ -51,13 +51,13 @@ namespace ProjektRally_Lydighed.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "96c823e2-29e9-4744-9ea0-b22894caef39",
-                            Name = "Member",
-                            NormalizedName = "MEMBER"
+                            Id = "81320319-93c2-4b29-af7f-1c5608143df1",
+                            Name = "Visitor",
+                            NormalizedName = "VISITOR"
                         },
                         new
                         {
-                            Id = "bd2f58f2-8450-45f3-a803-641d4936b7bb",
+                            Id = "906d8d67-44f5-45a5-84ad-cc0be3a6b34d",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -298,7 +298,6 @@ namespace ProjektRally_Lydighed.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EquipmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("ExerciseNr")
@@ -328,6 +327,9 @@ namespace ProjektRally_Lydighed.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ExerciseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -351,6 +353,8 @@ namespace ProjektRally_Lydighed.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
 
                     b.HasIndex("TrackId");
 
@@ -488,15 +492,21 @@ namespace ProjektRally_Lydighed.Migrations
                         .WithMany("Exercises")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("ProjektRally_Lydighed.Models.Equipment", null)
+                    b.HasOne("ProjektRally_Lydighed.Models.Equipment", "Equipment")
                         .WithMany("Exercises")
                         .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Equipment");
                 });
 
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Sign", b =>
                 {
+                    b.HasOne("ProjektRally_Lydighed.Models.Exercise", null)
+                        .WithMany("Signs")
+                        .HasForeignKey("ExerciseId");
+
                     b.HasOne("ProjektRally_Lydighed.Models.Track", "Track")
                         .WithMany("Signs")
                         .HasForeignKey("TrackId")
@@ -529,6 +539,11 @@ namespace ProjektRally_Lydighed.Migrations
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Equipment", b =>
                 {
                     b.Navigation("Exercises");
+                });
+
+            modelBuilder.Entity("ProjektRally_Lydighed.Models.Exercise", b =>
+                {
+                    b.Navigation("Signs");
                 });
 
             modelBuilder.Entity("ProjektRally_Lydighed.Models.Track", b =>

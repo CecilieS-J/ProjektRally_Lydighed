@@ -2,29 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjektRally_Lydighed.Data;
-using ProjektRally_Lydighed.Interfaces;
 using ProjektRally_Lydighed.Models;
 
 namespace ProjektRally_Lydighed.Controllers
 {
     public class ExercisesController : Controller
     {
-        private readonly IExerciseRepository _repository;
+        private readonly ProjektRally_LydighedContext1 _context;
 
-        public ExercisesController(IExerciseRepository repository)
+        public ExercisesController(ProjektRally_LydighedContext1 context)
         {
-            _repository = repository;
+            _context = context;
         }
 
         // GET: Exercises
         public async Task<IActionResult> Index()
         {
-            return View(await _repository.GetAllAsync());
+            return View(await _context.Exercise.ToListAsync());
         }
 
         // GET: Exercises/Details/5
@@ -35,7 +33,8 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var exercise = await _repository.GetByIdAsync(id.Value);
+            var exercise = await _context.Exercise
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (exercise == null)
             {
                 return NotFound();
@@ -50,15 +49,17 @@ namespace ProjektRally_Lydighed.Controllers
             return View();
         }
 
-
         // POST: Exercises/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Image,ExerciseNr")] Exercise exercise)
         {
             if (ModelState.IsValid)
             {
-                await _repository.AddAsync(exercise);
+                _context.Add(exercise);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(exercise);
@@ -72,7 +73,7 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var exercise = await _repository.GetByIdAsync(id.Value);
+            var exercise = await _context.Exercise.FindAsync(id);
             if (exercise == null)
             {
                 return NotFound();
@@ -81,6 +82,8 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // POST: Exercises/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image,ExerciseNr")] Exercise exercise)
@@ -94,11 +97,12 @@ namespace ProjektRally_Lydighed.Controllers
             {
                 try
                 {
-                    await _repository.UpdateAsync(exercise);
+                    _context.Update(exercise);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await ExerciseExists(exercise.Id))
+                    if (!ExerciseExists(exercise.Id))
                     {
                         return NotFound();
                     }
@@ -120,7 +124,8 @@ namespace ProjektRally_Lydighed.Controllers
                 return NotFound();
             }
 
-            var exercise = await _repository.GetByIdAsync(id.Value);
+            var exercise = await _context.Exercise
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (exercise == null)
             {
                 return NotFound();
@@ -134,19 +139,19 @@ namespace ProjektRally_Lydighed.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var exercise = await _repository.GetByIdAsync(id);
+            var exercise = await _context.Exercise.FindAsync(id);
             if (exercise != null)
             {
-                await _repository.DeleteAsync(exercise);
+                _context.Exercise.Remove(exercise);
             }
 
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> ExerciseExists(int id)
+        private bool ExerciseExists(int id)
         {
-            var exercise = await _repository.GetByIdAsync(id);
-            return exercise != null;
+            return _context.Exercise.Any(e => e.Id == id);
         }
     }
 }
