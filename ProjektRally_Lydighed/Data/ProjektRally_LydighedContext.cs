@@ -3,7 +3,7 @@
 
 namespace ProjektRally_Lydighed.Data
 {
-    public class ProjektRally_LydighedContext : DbContext
+   /* public class ProjektRally_LydighedContext : DbContext
     {
         public ProjektRally_LydighedContext (DbContextOptions<ProjektRally_LydighedContext> options)
             : base(options)
@@ -16,5 +16,6 @@ namespace ProjektRally_Lydighed.Data
         public DbSet<ProjektRally_Lydighed.Models.Exercise> Exercise { get; set; } = default!;
         public DbSet<ProjektRally_Lydighed.Models.Category> Category { get; set; } = default!;
         public DbSet<ProjektRally_Lydighed.Models.Equipment> Equipment { get; set; } = default!;
-    }
+    }*/
 }
+   

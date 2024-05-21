@@ -13,166 +13,167 @@ using ProjektRally_Lydighed.Repositories;
 
 namespace ProjektRally_Lydighed.Controllers
 {
-    public class SignsController : Controller
-    {
-        private readonly ISignRepository _signRepository;
 
-        public SignsController(ISignRepository signRepository)
-        {
-            _signRepository = signRepository;
-        }
+   public class SignsController : Controller
+     {
+         private readonly ISignRepository _signRepository;
 
-        // GET: Signs
-        // Denne metode er tilgængelig for alle brugere
-        [AllowAnonymous]
+         public SignsController(ISignRepository signRepository)
+         {
+             _signRepository = signRepository;
+         }
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await _signRepository.GetAllAsync());
-        }
+         // GET: Signs
+         // Denne metode er tilgængelig for alle brugere
+         [AllowAnonymous]
 
-        // GET: Signs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+         public async Task<IActionResult> Index()
+         {
+             return View(await _signRepository.GetAllAsync());
+         }
 
-            var sign = await _signRepository.GetByIdAsync(id.Value);
-            if (sign == null)
-            {
-                return NotFound();
-            }
+         // GET: Signs/Details/5
+         public async Task<IActionResult> Details(int? id)
+         {
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-            return View(sign);
-        }
+             var sign = await _signRepository.GetByIdAsync(id.Value);
+             if (sign == null)
+             {
+                 return NotFound();
+             }
 
-        // GET: Signs/Create
-        // Denne metode er kun tilgængelig for godkendte brugere
+             return View(sign);
+         }
 
-        [Authorize]
-        public IActionResult Create()
-        {
-            return View();
-        }
+         // GET: Signs/Create
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-        // POST: Signs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // Denne metode er kun tilgængelig for godkendte brugere
+         [Authorize]
+         public IActionResult Create()
+         {
+             return View();
+         }
 
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SignNumber")] Sign sign)
-        {
-            if (ModelState.IsValid)
-            {
-                await _signRepository.AddAsync(sign);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(sign);
-        }
+         // POST: Signs/Create
+         // To protect from overposting attacks, enable the specific properties you want to bind to.
+         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-        // GET: Signs/Edit/5
-        // Denne metode er kun tilgængelig for godkendte brugere
+         [Authorize]
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public async Task<IActionResult> Create([Bind("Id,SignNumber")] Sign sign)
+         {
+             if (ModelState.IsValid)
+             {
+                 await _signRepository.AddAsync(sign);
+                 return RedirectToAction(nameof(Index));
+             }
+             return View(sign);
+         }
 
-        [Authorize]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+         // GET: Signs/Edit/5
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-            var sign = await _signRepository.GetByIdAsync(id.Value);
-            if (sign == null)
-            {
-                return NotFound();
-            }
-            return View(sign);
-        }
+         [Authorize]
+         public async Task<IActionResult> Edit(int? id)
+         {
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-        // POST: Signs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // Denne metode er kun tilgængelig for godkendte brugere
+             var sign = await _signRepository.GetByIdAsync(id.Value);
+             if (sign == null)
+             {
+                 return NotFound();
+             }
+             return View(sign);
+         }
 
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
-        {
-            if (id != sign.Id)
-            {
-                return NotFound();
-            }
+         // POST: Signs/Edit/5
+         // To protect from overposting attacks, enable the specific properties you want to bind to.
+         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    await _signRepository.UpdateAsync(sign);
+         [Authorize]
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public async Task<IActionResult> Edit(int id, [Bind("Id,SignNumber,XCoordinate,YCoordinate,Rotation")] Sign sign)
+         {
+             if (id != sign.Id)
+             {
+                 return NotFound();
+             }
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!await SignExistsAsync(sign.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(sign);
-        }
+             if (ModelState.IsValid)
+             {
+                 try
+                 {
+                     await _signRepository.UpdateAsync(sign);
 
-        // GET: Signs/Delete/5
-        // Denne metode er kun tilgængelig for godkendte brugere
+                 }
+                 catch (DbUpdateConcurrencyException)
+                 {
+                     if (!await SignExistsAsync(sign.Id))
+                     {
+                         return NotFound();
+                     }
+                     else
+                     {
+                         throw;
+                     }
+                 }
+                 return RedirectToAction(nameof(Index));
+             }
+             return View(sign);
+         }
 
-        [Authorize]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+         // GET: Signs/Delete/5
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-            var sign = await _signRepository.GetByIdAsync(id.Value);
-            if (sign == null)
-            {
-                return NotFound();
-            }
+         [Authorize]
+         public async Task<IActionResult> Delete(int? id)
+         {
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-            return View(sign);
-        }
+             var sign = await _signRepository.GetByIdAsync(id.Value);
+             if (sign == null)
+             {
+                 return NotFound();
+             }
 
-        // POST: Signs/Delete/5
-        // Denne metode er kun tilgængelig for godkendte brugere
+             return View(sign);
+         }
 
-        [Authorize]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var sign = await _signRepository.GetByIdAsync(id);
-            if (sign != null)
-            {
-                await _signRepository.DeleteAsync(sign);
-            }
+         // POST: Signs/Delete/5
+         // Denne metode er kun tilgængelig for godkendte brugere
 
-              return RedirectToAction(nameof(Index));
-        }
+         [Authorize]
+         [HttpPost, ActionName("Delete")]
+         [ValidateAntiForgeryToken]
+         public async Task<IActionResult> DeleteConfirmed(int id)
+         {
+             var sign = await _signRepository.GetByIdAsync(id);
+             if (sign != null)
+             {
+                 await _signRepository.DeleteAsync(sign);
+             }
 
-        private async Task<bool> SignExistsAsync(int id)
-        {
-            var sign = await _signRepository.GetByIdAsync(id);
-            return sign != null;
-        }
-    }
+               return RedirectToAction(nameof(Index));
+         }
+
+         private async Task<bool> SignExistsAsync(int id)
+         {
+             var sign = await _signRepository.GetByIdAsync(id);
+             return sign != null;
+         }
+     }
 }
