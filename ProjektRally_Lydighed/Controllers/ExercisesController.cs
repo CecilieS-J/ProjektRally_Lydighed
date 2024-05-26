@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace ProjektRally_Lydighed.Controllers
         }
 
         // GET: Exercises/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace ProjektRally_Lydighed.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Image,ExerciseNr")] Exercise exercise)
         {
             if (ModelState.IsValid)

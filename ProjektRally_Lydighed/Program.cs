@@ -36,7 +36,7 @@ using ProjektRally_Lydighed.Areas.Identity.Data;
         var app = builder.Build();
 
 
-// Seed roles and assign admin role to an existing user
+/*// Seed roles and assign admin role to an existing user
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ProjektRally_Lydighed1>>();
@@ -52,7 +52,7 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(user, "Administrator");
         }
     }
-}
+}/*
 
 
 
